@@ -320,11 +320,12 @@
     </div>
     <div class="contact-form-area">
       <h3>Send us a message</h3>
-      <div class="form-group"><label>Your name</label><input type="text" placeholder="John Doe"></div>
-      <div class="form-group"><label>Email address</label><input type="email" placeholder="you@example.com"></div>
+      <form action="https://formspree.io/f/mqeowpqg" method="POST">
+      <div class="form-group"><label>Your name</label><input type="text" name="name" placeholder="John Doe" required></div>
+      <div class="form-group"><label>Email address</label><input type="email" name="email" placeholder="you@example.com" required></div>
       <div class="form-group">
         <label>I'm interested in…</label>
-        <select>
+        <select name="interest">
           <option>Volunteering</option>
           <option>Donating</option>
           <option>Partnership / Media</option>
@@ -332,8 +333,9 @@
           <option>General question</option>
         </select>
       </div>
-      <div class="form-group"><label>Message</label><textarea placeholder="Tell us how you'd like to get involved..."></textarea></div>
-      <button class="btn-send">Send Message →</button>
+      <div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell us how you'd like to get involved..." required></textarea></div>
+      <button type="submit" class="btn-send">Send Message →</button>
+      </form>
     </div>
   </div>
 </section>
