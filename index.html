@@ -189,32 +189,14 @@
     <p class="section-label">Stay Informed</p>
     <h2>Fire News</h2>
   </div>
-  <div class="news-grid">
+  <div class="news-grid" id="news-grid">
     <div class="news-card">
       <div class="news-img img1">🔥</div>
       <div class="news-body">
-        <div class="news-tag">Breaking</div>
-        <h3>CAL FIRE Reports Active Incidents Across Northern California</h3>
-        <p>Several wildfires are currently being monitored. Stay updated via official CAL FIRE channels.</p>
-        <div class="news-date">June 18, 2026</div>
-      </div>
-    </div>
-    <div class="news-card">
-      <div class="news-img img2">📋</div>
-      <div class="news-body">
-        <div class="news-tag">Research</div>
-        <h3>New Report: Home Hardening Cuts Risk by 40%</h3>
-        <p>Our latest study shows simple modifications significantly reduce the chance of structure ignition.</p>
-        <div class="news-date">May 29, 2026</div>
-      </div>
-    </div>
-    <div class="news-card">
-      <div class="news-img img3">🌿</div>
-      <div class="news-body">
-        <div class="news-tag">Community</div>
-        <h3>Volunteer Brush Clearing Day — 200 Families Protected</h3>
-        <p>Thank you to our 47 volunteers who cleared defensible space around at-risk homes last month.</p>
-        <div class="news-date">May 15, 2026</div>
+        <div class="news-tag">Loading...</div>
+        <h3>Fetching latest news...</h3>
+        <p>Please wait while we load the latest fire news.</p>
+        <div class="news-date"></div>
       </div>
     </div>
   </div>
@@ -349,12 +331,40 @@
 </footer>
 
 <script>
-  document.querySelectorAll('.amount-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+  const SHEET_ID = '1vmSnFem0VvAi0GVsmDbvKWMJb9Vak5LnjumvLykUc7I';
+  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json';
+  const imgClasses = ['img1', 'img2', 'img3'];
+
+  fetch(SHEET_URL)
+    .then(r => r.text())
+    .then(text => {
+      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+      const rows = json.table.rows;
+      const grid = document.getElementById('news-grid');
+      grid.innerHTML = '';
+      const latest = rows.slice(0, 3);
+      latest.forEach((row, i) => {
+        const tag = row.c[0]?.v || '';
+        const title = row.c[1]?.v || '';
+        const desc = row.c[2]?.v || '';
+        const date = row.c[3]?.v || '';
+        const emoji = row.c[4]?.v || '🔥';
+        const link = row.c[5]?.v || '';
+        grid.innerHTML += '<div class="news-card">' +
+          '<div class="news-img ' + imgClasses[i] + '">' + emoji + '</div>' +
+          '<div class="news-body">' +
+          '<div class="news-tag">' + tag + '</div>' +
+          '<h3>' + title + '</h3>' +
+          '<p>' + desc + '</p>' +
+          (link ? '<a href="' + link + '" target="_blank" class="res-link">Read more →</a>' : '') +
+          '<div class="news-date">' + date + '</div>' +
+          '</div></div>';
+      });
+    })
+    .catch(() => {
+      document.getElementById('news-grid').innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
     });
-  });
+
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const target = document.querySelector(a.getAttribute('href'));
