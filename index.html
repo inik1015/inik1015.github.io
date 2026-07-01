@@ -332,28 +332,49 @@
 
 <script>
   const SHEET_ID = '1vmSnFem0VvAi0GVsmDbvKWMJb9Vak5LnjumvLykUc7I';
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json';
-  const imgClasses = ['img1', 'img2', 'img3'];
+  const SHEETS = [
+    { gid: '0', cls: 'img1', tag: 'Breaking', emoji: '🔥' },
+    { gid: '388633376', cls: 'img2', tag: 'Research', emoji: '📋' },
+    { gid: '1068677460', cls: 'img3', tag: 'Community', emoji: '🤝' }
+  ];
 
-  fetch(SHEET_URL)
-    .then(r => r.text())
-    .then(text => {
-      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-      const rows = json.table.rows;
-      const grid = document.getElementById('news-grid');
-      grid.innerHTML = '';
-      const latest = rows.slice(0, 3);
-      latest.forEach((row, i) => {
-        const tag = row.c[0]?.v || '';
-        const title = row.c[1]?.v || '';
-        const desc = row.c[2]?.v || '';
-        const date = row.c[3]?.v || '';
-        const emoji = row.c[4]?.v || '🔥';
-        const link = row.c[5]?.v || '';
+  function parseDate(rawDate) {
+    if (!rawDate) return '';
+    if (typeof rawDate.v === 'string') return rawDate.v;
+    if (rawDate.f) return rawDate.f;
+    if (typeof rawDate.v === 'object' && rawDate.v !== null) {
+      const d = new Date(rawDate.v);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+    return '';
+  }
+
+  function fetchSheet(sheet) {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid;
+    return fetch(url)
+      .then(r => r.text())
+      .then(text => {
+        const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+        return json.table.rows[0] || null;
+      });
+  }
+
+  const grid = document.getElementById('news-grid');
+  grid.innerHTML = '';
+
+  Promise.all(SHEETS.map(s => fetchSheet(s)))
+    .then(rows => {
+      rows.forEach((row, i) => {
+        if (!row) return;
+        const sheet = SHEETS[i];
+        const title = row.c[0]?.v || '';
+        const desc = row.c[1]?.v || '';
+        const date = parseDate(row.c[2]);
+        const link = row.c[3]?.v || '';
         grid.innerHTML += '<div class="news-card">' +
-          '<div class="news-img ' + imgClasses[i] + '">' + emoji + '</div>' +
+          '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>' +
           '<div class="news-body">' +
-          '<div class="news-tag">' + tag + '</div>' +
+          '<div class="news-tag">' + sheet.tag + '</div>' +
           '<h3>' + title + '</h3>' +
           '<p>' + desc + '</p>' +
           (link ? '<a href="' + link + '" target="_blank" class="res-link">Read more →</a>' : '') +
@@ -362,7 +383,7 @@
       });
     })
     .catch(() => {
-      document.getElementById('news-grid').innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
+      grid.innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
     });
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
