@@ -441,13 +441,13 @@
       });
   }
 
-  function buildCard(row, sheet) {
+  function buildCard(row, sheet, isLatest) {
     const title = row.c[0]?.v || '';
     const desc  = row.c[1]?.v || '';
     const date  = parseDate(row.c[2]);
     const link  = row.c[3]?.v || '';
     return '<div class="news-card">' +
-      '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>' +
+      (isLatest ? '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>' : '') +
       '<div class="news-body">' +
       '<div class="news-tag">' + sheet.tag + '</div>' +
       '<h3>' + title + '</h3>' +
@@ -465,7 +465,7 @@
       // Show up to 3 rows per category, one grid per row index
       const maxRows = Math.max(...results.map(r => r.length));
       for (let i = 0; i < maxRows; i++) {
-        const cards = results.map((rows, si) => rows[i] ? buildCard(rows[i], SHEETS[si]) : '').join('');
+        const cards = results.map((rows, si) => rows[i] ? buildCard(rows[i], SHEETS[si], i === 0) : '').join('');
         if (cards.trim()) {
           container.innerHTML += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
         }
