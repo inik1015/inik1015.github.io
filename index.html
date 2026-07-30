@@ -478,6 +478,7 @@
       container.innerHTML = '';
       const maxRows = Math.max(...results.map(r => r.length));
       let hasOlder = false;
+      let olderHtml = '';
 
       for (let i = 0; i < maxRows; i++) {
         const cards = results.map((rows, si) => rows[i] ? buildCard(rows[i], SHEETS[si], i === 0) : '').join('');
@@ -485,17 +486,14 @@
         if (i === 0) {
           container.innerHTML += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
         } else {
-          if (!hasOlder) {
-            container.innerHTML += '<div class="older-news" id="older-news">';
-            hasOlder = true;
-          }
-          container.innerHTML += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
+          hasOlder = true;
+          olderHtml += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
         }
       }
 
       if (hasOlder) {
-        container.innerHTML += '</div>';
-        container.innerHTML += '<button class="btn-show-more" id="btn-show-more" onclick="toggleOlderNews()">이전 뉴스 보기 ▼</button>';
+        container.innerHTML += '<div class="older-news" id="older-news" style="display:none;">' + olderHtml + '</div>';
+        container.innerHTML += '<button class="btn-show-more" id="btn-show-more" onclick="toggleOlderNews()">View Previous News ▼</button>';
       }
     })
     .catch(() => {
@@ -507,10 +505,10 @@
     const btn = document.getElementById('btn-show-more');
     if (older.style.display === 'block') {
       older.style.display = 'none';
-      btn.textContent = '이전 뉴스 보기 ▼';
+      btn.textContent = 'View Previous News ▼';
     } else {
       older.style.display = 'block';
-      btn.textContent = '이전 뉴스 접기 ▲';
+      btn.textContent = 'Hide Previous News ▲';
     }
   }
 
