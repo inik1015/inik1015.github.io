@@ -69,7 +69,9 @@
   .pillar p { font-size: 0.82rem; color: #5A7A4A; line-height: 1.5; }
 
   .news-section { background: #F2F9EE; }
-  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 2rem auto 0; }
+  .news-group { margin-bottom: 2.5rem; }
+  .news-group-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #1E5C14; margin-bottom: 1rem; padding-left: 4px; border-left: 3px solid #D4621A; padding-left: 10px; }
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; }
   .news-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid #C8DFC0; transition: transform 0.2s, box-shadow 0.2s; }
   .news-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30,92,20,0.1); }
   .news-img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
@@ -183,8 +185,6 @@
   </div>
 </section>
 
-
-
 <section class="mission-section" id="mission">
   <div class="mission-grid">
     <div class="mission-text">
@@ -215,18 +215,7 @@
     <p class="section-label">Stay Informed</p>
     <h2>Fire News</h2>
   </div>
-  <div class="news-grid" id="news-grid">
-    <div class="news-card">
-      <div class="news-img img1">🔥</div>
-      <div class="news-body">
-        <div class="news-tag">Loading...</div>
-        <h3>Fetching latest news...</h3>
-        <p>Please wait while we load the latest fire news.</p>
-        <div class="news-date"></div>
-      </div>
-    </div>
-  </div>
-
+  <div id="news-container" style="max-width: 960px; margin: 2rem auto 0;"></div>
 </section>
 
 <section class="resources-section" id="incidents" style="background: #F2F9EE;">
@@ -425,8 +414,8 @@
 <script>
   const SHEET_ID = '1vmSnFem0VvAi0GVsmDbvKWMJb9Vak5LnjumvLykUc7I';
   const SHEETS = [
-    { gid: '0', cls: 'img1', tag: 'Breaking', emoji: '🔥' },
-    { gid: '388633376', cls: 'img2', tag: 'Research', emoji: '📋' },
+    { gid: '0',          cls: 'img1', tag: 'Breaking',  emoji: '🔥' },
+    { gid: '388633376',  cls: 'img2', tag: 'Research',  emoji: '📋' },
     { gid: '1068677460', cls: 'img3', tag: 'Community', emoji: '🤝' }
   ];
 
@@ -441,41 +430,49 @@
     return '';
   }
 
+  // Fetch top 3 rows from each sheet
   function fetchSheet(sheet) {
     const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid;
     return fetch(url)
       .then(r => r.text())
       .then(text => {
         const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-        return json.table.rows[0] || null;
+        return (json.table.rows || []).slice(0, 3);
       });
   }
 
-  const grid = document.getElementById('news-grid');
-  grid.innerHTML = '';
+  function buildCard(row, sheet) {
+    const title = row.c[0]?.v || '';
+    const desc  = row.c[1]?.v || '';
+    const date  = parseDate(row.c[2]);
+    const link  = row.c[3]?.v || '';
+    return '<div class="news-card">' +
+      '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>' +
+      '<div class="news-body">' +
+      '<div class="news-tag">' + sheet.tag + '</div>' +
+      '<h3>' + title + '</h3>' +
+      '<p>' + desc + '</p>' +
+      (link ? '<a href="' + link + '" target="_blank" class="res-link">Read more →</a>' : '') +
+      '<div class="news-date">' + date + '</div>' +
+      '</div></div>';
+  }
+
+  const container = document.getElementById('news-container');
 
   Promise.all(SHEETS.map(s => fetchSheet(s)))
-    .then(rows => {
-      rows.forEach((row, i) => {
-        if (!row) return;
-        const sheet = SHEETS[i];
-        const title = row.c[0]?.v || '';
-        const desc = row.c[1]?.v || '';
-        const date = parseDate(row.c[2]);
-        const link = row.c[3]?.v || '';
-        grid.innerHTML += '<div class="news-card">' +
-          '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>' +
-          '<div class="news-body">' +
-          '<div class="news-tag">' + sheet.tag + '</div>' +
-          '<h3>' + title + '</h3>' +
-          '<p>' + desc + '</p>' +
-          (link ? '<a href="' + link + '" target="_blank" class="res-link">Read more →</a>' : '') +
-          '<div class="news-date">' + date + '</div>' +
-          '</div></div>';
-      });
+    .then(results => {
+      container.innerHTML = '';
+      // Show up to 3 rows per category, one grid per row index
+      const maxRows = Math.max(...results.map(r => r.length));
+      for (let i = 0; i < maxRows; i++) {
+        const cards = results.map((rows, si) => rows[i] ? buildCard(rows[i], SHEETS[si]) : '').join('');
+        if (cards.trim()) {
+          container.innerHTML += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
+        }
+      }
     })
     .catch(() => {
-      grid.innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
+      container.innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
     });
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
