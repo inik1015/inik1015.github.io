@@ -87,9 +87,9 @@
 </div>
 
 <div class="tabs">
-  <button class="tab-btn" id="tab-0" onclick="switchTab(0)">🔥 Breaking</button>
-  <button class="tab-btn" id="tab-1" onclick="switchTab(1)">📋 Research</button>
-  <button class="tab-btn" id="tab-2" onclick="switchTab(2)">🤝 Community</button>
+  <button class="tab-btn" id="tab-0" onclick="switchTab(0)"> Breaking</button>
+  <button class="tab-btn" id="tab-1" onclick="switchTab(1)"> Research</button>
+  <button class="tab-btn" id="tab-2" onclick="switchTab(2)"> Community</button>
 </div>
 
 <div class="news-container" id="news-container">
@@ -109,9 +109,9 @@
 <script>
   const SHEET_ID = '1vmSnFem0VvAi0GVsmDbvKWMJb9Vak5LnjumvLykUc7I';
   const SHEETS = [
-    { gid: '0',          cls: 'img1', tag: 'Breaking',  emoji: '🔥' },
-    { gid: '388633376',  cls: 'img2', tag: 'Research',  emoji: '📋' },
-    { gid: '1068677460', cls: 'img3', tag: 'Community', emoji: '🤝' }
+    { gid: '0',          cls: 'img1', tag: 'Breaking',  emoji: '' },
+    { gid: '388633376',  cls: 'img2', tag: 'Research',  emoji: '' },
+    { gid: '1068677460', cls: 'img3', tag: 'Community', emoji: '' }
   ];
 
   let allData = [];
@@ -145,14 +145,10 @@
     const link     = row.c[3]?.v || '';
     const imageUrl = row.c[4]?.v || '';
     let headerHtml = '';
-    if (isLatest) {
-      if (imageUrl) {
-        headerHtml = '<div class="news-img" style="background:none; padding:0; height:160px;">' +
-          '<img src="' + imageUrl + '" alt="" style="width:100%; height:100%; object-fit:cover;">' +
-          '</div>';
-      } else {
-        headerHtml = '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>';
-      }
+    if (imageUrl) {
+      headerHtml = '<div class="news-img" style="background:none; padding:0; height:160px;">' +
+        '<img src="' + imageUrl + '" alt="" style="width:100%; height:100%; object-fit:cover;">' +
+        '</div>';
     }
     return '<div class="news-card">' +
       headerHtml +
