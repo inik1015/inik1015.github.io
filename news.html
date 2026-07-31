@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire News | TrailBlazersYouth</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: #F7FBF4; color: #1A2E14; }
+
+  nav { background: #F7FBF4; border-bottom: 1px solid #C8DFC0; padding: 0 2rem; height: 80px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.2rem; color: #1E5C14; text-decoration: none; }
+  .logo img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+  .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .logo-sub { font-size: 0.65rem; font-weight: 600; color: #5A8A4A; letter-spacing: 0.04em; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; color: #2E5A20; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; }
+  .nav-links a:hover { color: #D4621A; }
+  .btn-donate-nav { background: #D4621A; color: white !important; padding: 8px 20px; border-radius: 20px; font-weight: 700 !important; }
+
+  .page-header { background: linear-gradient(135deg, #EDF7E8 0%, #D4EBC8 50%, #EAF4E4 100%); padding: 3rem 2rem 2rem; text-align: center; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; color: #1E5C14; font-weight: 700; font-size: 0.85rem; text-decoration: none; margin-bottom: 1.5rem; }
+  .back-link:hover { text-decoration: underline; }
+  .page-header h1 { font-family: 'Merriweather', serif; font-size: 2rem; color: #1A3D10; margin-bottom: 0.5rem; }
+  .page-header p { color: #3A5C2C; font-size: 0.95rem; }
+
+  .tabs { display: flex; justify-content: center; gap: 0.75rem; padding: 1.5rem 2rem; background: white; border-bottom: 1px solid #C8DFC0; flex-wrap: wrap; }
+  .tab-btn { padding: 8px 22px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; font-family: 'Nunito', sans-serif; border: 2px solid #C8DFC0; background: white; color: #3A5C2C; transition: all 0.2s; }
+  .tab-btn.active { background: #1E5C14; color: white; border-color: #1E5C14; }
+  .tab-btn:hover:not(.active) { border-color: #1E5C14; color: #1E5C14; }
+
+  .news-container { max-width: 960px; margin: 2.5rem auto; padding: 0 2rem; }
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+  .news-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid #C8DFC0; transition: transform 0.2s, box-shadow 0.2s; }
+  .news-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30,92,20,0.1); }
+  .news-img { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .news-img.img1 { background: linear-gradient(135deg, #FFD4A8, #FFB87A); }
+  .news-img.img2 { background: linear-gradient(135deg, #B8E0A8, #7FCF70); }
+  .news-img.img3 { background: linear-gradient(135deg, #C8DFC0, #8FBF80); }
+  .news-body { padding: 1rem; }
+  .news-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #D4621A; margin-bottom: 0.4rem; }
+  .news-card h3 { font-size: 0.9rem; font-weight: 700; color: #1A2E14; line-height: 1.4; margin-bottom: 0.4rem; }
+  .news-card p { font-size: 0.78rem; color: #5A7A4A; line-height: 1.5; }
+  .news-date { font-size: 0.72rem; color: #8AAA7A; margin-top: 0.6rem; font-weight: 600; }
+  .res-link { font-size: 0.75rem; color: #D4621A; font-weight: 700; margin-top: 4px; display: inline-block; }
+
+  .empty-msg { text-align: center; color: #5A7A4A; padding: 3rem; font-size: 0.95rem; }
+
+  footer { background: #0F3008; color: rgba(255,255,255,0.7); text-align: center; padding: 2rem; font-size: 0.85rem; margin-top: 4rem; }
+  footer .footer-logo { color: #8FD470; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  footer .footer-logo img { width: 28px; height: 28px; border-radius: 50%; }
+  footer a { color: #8FD470; text-decoration: none; }
+
+  @media (max-width: 700px) {
+    .news-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="TrailBlazersYouth logo">
+    <div class="logo-text">
+      <span>TrailBlazersYouth</span>
+      <span class="logo-sub">Wildfire Prevention</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#mission">Our Mission</a></li>
+    <li><a href="index.html#news">Fire News</a></li>
+    <li><a href="index.html#incidents">Incident Maps</a></li>
+    <li><a href="index.html#resources">Resources</a></li>
+    <li><a href="index.html#research">Research</a></li>
+    <li><a href="index.html#volunteer">Volunteer</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="index.html#donate" class="btn-donate-nav">Donate</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <a href="index.html#news" class="back-link">← Back to Home</a>
+  <h1 id="page-title">Fire News</h1>
+  <p>Stay up to date with the latest wildfire news and research.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn" id="tab-0" onclick="switchTab(0)">🔥 Breaking</button>
+  <button class="tab-btn" id="tab-1" onclick="switchTab(1)">📋 Research</button>
+  <button class="tab-btn" id="tab-2" onclick="switchTab(2)">🤝 Community</button>
+</div>
+
+<div class="news-container" id="news-container">
+  <p class="empty-msg">Loading news...</p>
+</div>
+
+<footer>
+  <div class="footer-logo">
+    <img src="logo.png" alt="logo">
+    TrailBlazersYouth
+  </div>
+  <p>A nonprofit organization dedicated to wildfire prevention</p>
+  <p style="margin-top: 0.5rem;"><a href="index.html#donate">Donate</a></p>
+  <p style="margin-top: 0.8rem; font-size: 0.75rem; opacity: 0.6;">© 2026 TrailBlazersYouth. All rights reserved.</p>
+</footer>
+
+<script>
+  const SHEET_ID = '1vmSnFem0VvAi0GVsmDbvKWMJb9Vak5LnjumvLykUc7I';
+  const SHEETS = [
+    { gid: '0',          cls: 'img1', tag: 'Breaking',  emoji: '🔥' },
+    { gid: '388633376',  cls: 'img2', tag: 'Research',  emoji: '📋' },
+    { gid: '1068677460', cls: 'img3', tag: 'Community', emoji: '🤝' }
+  ];
+
+  let allData = [];
+  let activeTab = 0;
+
+  function parseDate(rawDate) {
+    if (!rawDate) return '';
+    if (typeof rawDate.v === 'string') return rawDate.v;
+    if (rawDate.f) return rawDate.f;
+    if (typeof rawDate.v === 'object' && rawDate.v !== null) {
+      const d = new Date(rawDate.v);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+    return '';
+  }
+
+  function fetchSheet(sheet) {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid;
+    return fetch(url)
+      .then(r => r.text())
+      .then(text => {
+        const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+        return json.table.rows || [];
+      });
+  }
+
+  function buildCard(row, sheet, isLatest) {
+    const title    = row.c[0]?.v || '';
+    const desc     = row.c[1]?.v || '';
+    const date     = parseDate(row.c[2]);
+    const link     = row.c[3]?.v || '';
+    const imageUrl = row.c[4]?.v || '';
+    let headerHtml = '';
+    if (isLatest) {
+      if (imageUrl) {
+        headerHtml = '<div class="news-img" style="background:none; padding:0; height:160px;">' +
+          '<img src="' + imageUrl + '" alt="" style="width:100%; height:100%; object-fit:cover;">' +
+          '</div>';
+      } else {
+        headerHtml = '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>';
+      }
+    }
+    return '<div class="news-card">' +
+      headerHtml +
+      '<div class="news-body">' +
+      '<div class="news-tag">' + sheet.tag + '</div>' +
+      '<h3>' + title + '</h3>' +
+      '<p>' + desc + '</p>' +
+      (link ? '<a href="' + link + '" target="_blank" class="res-link">Read more →</a>' : '') +
+      '<div class="news-date">' + date + '</div>' +
+      '</div></div>';
+  }
+
+  function renderTab(tabIndex) {
+    const container = document.getElementById('news-container');
+    const sheet = SHEETS[tabIndex];
+    const rows = allData[tabIndex] || [];
+
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', i === tabIndex);
+    });
+    document.getElementById('page-title').textContent = sheet.tag + ' News';
+
+    if (!rows.length) {
+      container.innerHTML = '<p class="empty-msg">No news available yet.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    // Show all rows, 3 cards per row
+    for (let i = 0; i < rows.length; i += 3) {
+      let rowHtml = '<div class="news-grid">';
+      for (let j = i; j < Math.min(i + 3, rows.length); j++) {
+        rowHtml += buildCard(rows[j], sheet, j === 0);
+      }
+      rowHtml += '</div>';
+      container.innerHTML += rowHtml;
+    }
+  }
+
+  function switchTab(tabIndex) {
+    activeTab = tabIndex;
+    // Update URL param without reload
+    const url = new URL(window.location);
+    url.searchParams.set('tab', SHEETS[tabIndex].gid);
+    window.history.replaceState({}, '', url);
+    renderTab(tabIndex);
+  }
+
+  // Load all sheets then render
+  Promise.all(SHEETS.map(s => fetchSheet(s)))
+    .then(results => {
+      allData = results;
+      // Check URL param for initial tab
+      const params = new URLSearchParams(window.location.search);
+      const gid = params.get('tab');
+      const tabIndex = SHEETS.findIndex(s => s.gid === gid);
+      activeTab = tabIndex >= 0 ? tabIndex : 0;
+      renderTab(activeTab);
+    })
+    .catch(() => {
+      document.getElementById('news-container').innerHTML =
+        '<p class="empty-msg">Could not load news. Please try again later.</p>';
+    });
+</script>
+</body>
+</html>
