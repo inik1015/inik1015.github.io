@@ -451,14 +451,10 @@
     const link     = row.c[3]?.v || '';
     const imageUrl = row.c[4]?.v || '';
     let headerHtml = '';
-    if (isLatest) {
-      if (imageUrl) {
-        headerHtml = '<div class="news-img" style="background: none; padding: 0; height: 160px;">' +
-          '<img src="' + imageUrl + '" alt="" style="width: 100%; height: 100%; object-fit: cover;">' +
-          '</div>';
-      } else {
-        headerHtml = '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>';
-      }
+    if (imageUrl) {
+      headerHtml = '<div class="news-img" style="background: none; padding: 0; height: 160px;">' +
+        '<img src="' + imageUrl + '" alt="" style="width: 100%; height: 100%; object-fit: cover;">' +
+        '</div>';
     }
     return '<div class="news-card">' +
       headerHtml +
