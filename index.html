@@ -69,9 +69,9 @@
   .pillar p { font-size: 0.82rem; color: #5A7A4A; line-height: 1.5; }
 
   .news-section { background: #F2F9EE; }
-  .news-group { margin-bottom: 2.5rem; }
-  .news-group-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #1E5C14; margin-bottom: 1rem; padding-left: 4px; border-left: 3px solid #D4621A; padding-left: 10px; }
-  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; }
+  .news-category { max-width: 960px; margin: 0 auto 3rem; }
+  .news-category-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #1E5C14; margin-bottom: 1rem; border-left: 3px solid #D4621A; padding-left: 10px; }
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
   .news-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid #C8DFC0; transition: transform 0.2s, box-shadow 0.2s; }
   .news-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30,92,20,0.1); }
   .news-img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
@@ -476,39 +476,46 @@
   Promise.all(SHEETS.map(s => fetchSheet(s)))
     .then(results => {
       container.innerHTML = '';
-      const maxRows = Math.max(...results.map(r => r.length));
-      let hasOlder = false;
-      let olderHtml = '';
+      results.forEach((rows, si) => {
+        const sheet = SHEETS[si];
+        if (!rows.length) return;
 
-      for (let i = 0; i < maxRows; i++) {
-        const cards = results.map((rows, si) => rows[i] ? buildCard(rows[i], SHEETS[si], i === 0) : '').join('');
-        if (!cards.trim()) continue;
-        if (i === 0) {
-          container.innerHTML += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
-        } else {
-          hasOlder = true;
-          olderHtml += '<div class="news-grid" style="margin-bottom: 1.5rem;">' + cards + '</div>';
+        const latest = rows[0];
+        const older  = rows.slice(1);
+        const catId  = 'older-' + sheet.gid;
+        const btnId  = 'btn-' + sheet.gid;
+
+        let html = '<div class="news-category">';
+        html += '<div class="news-category-title">' + sheet.tag + '</div>';
+        html += '<div class="news-grid">' + buildCard(latest, sheet, true) + '</div>';
+
+        if (older.length) {
+          html += '<div id="' + catId + '" style="display:none; margin-top:1.5rem;">';
+          older.forEach(row => {
+            html += '<div class="news-grid" style="margin-bottom:1.5rem;">' + buildCard(row, sheet, false) + '</div>';
+          });
+          html += '</div>';
+          html += '<button class="btn-show-more" id="' + btnId + '" style="margin-top:1rem;" onclick="toggleCategory(\'' + catId + '\', \'' + btnId + '\')">View Previous ' + sheet.tag + ' ▼</button>';
         }
-      }
 
-      if (hasOlder) {
-        container.innerHTML += '<div class="older-news" id="older-news" style="display:none;">' + olderHtml + '</div>';
-        container.innerHTML += '<button class="btn-show-more" id="btn-show-more" onclick="toggleOlderNews()">View Previous News ▼</button>';
-      }
+        html += '</div>';
+        container.innerHTML += html;
+      });
     })
     .catch(() => {
       container.innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
     });
 
-  function toggleOlderNews() {
-    const older = document.getElementById('older-news');
-    const btn = document.getElementById('btn-show-more');
-    if (older.style.display === 'block') {
-      older.style.display = 'none';
-      btn.textContent = 'View Previous News ▼';
+  function toggleCategory(catId, btnId) {
+    const el  = document.getElementById(catId);
+    const btn = document.getElementById(btnId);
+    const tag = btn.textContent.replace('View Previous ', '').replace('Hide ', '').replace(' ▼','').replace(' ▲','');
+    if (el.style.display === 'block') {
+      el.style.display = 'none';
+      btn.textContent = 'View Previous ' + tag + ' ▼';
     } else {
-      older.style.display = 'block';
-      btn.textContent = 'Hide Previous News ▲';
+      el.style.display = 'block';
+      btn.textContent = 'Hide ' + tag + ' ▲';
     }
   }
 
