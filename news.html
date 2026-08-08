@@ -178,11 +178,16 @@
     }
 
     container.innerHTML = '';
-    // Show all rows, 3 cards per row
-    for (let i = 0; i < rows.length; i += 3) {
+    // Skip row 0 (shown on homepage), show from row 1 onwards
+    const olderRows = rows.slice(1);
+    if (!olderRows.length) {
+      container.innerHTML = '<p class="empty-msg">No previous news available yet.</p>';
+      return;
+    }
+    for (let i = 0; i < olderRows.length; i += 3) {
       let rowHtml = '<div class="news-grid">';
-      for (let j = i; j < Math.min(i + 3, rows.length); j++) {
-        rowHtml += buildCard(rows[j], sheet, j === 0);
+      for (let j = i; j < Math.min(i + 3, olderRows.length); j++) {
+        rowHtml += buildCard(olderRows[j], sheet, false);
       }
       rowHtml += '</div>';
       container.innerHTML += rowHtml;
