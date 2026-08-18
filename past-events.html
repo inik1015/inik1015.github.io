@@ -107,11 +107,11 @@
   const EVENTS_SHEET_ID = '1oSUGyAle6bt5FPZwANEuVrhIv0P9_RFIOn5MGi7ibtg';
   const EVENTS_GID = '496792304';
   const EVENT_EMOJI = {
-    'Trail Cleanup': '🧹',
-    'Fundraising': '💰',
-    'Member Meeting': '🤝',
-    'Public Education': '📚',
-    'Event': '📅'
+    'Trail Cleanup': '',
+    'Fundraising': '',
+    'Member Meeting': '',
+    'Public Education': '',
+    'Event': ''
   };
 
   function parseEventDate(rawDate) {
@@ -164,15 +164,14 @@
       grid.innerHTML = past.length ? '' : '<p class="empty-msg">No past events yet — check back soon!</p>';
       past.forEach(e => {
         const dateStr = e.dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
         grid.innerHTML += '<div class="past-card">' +
           (e.photo ? '<img src="' + e.photo + '" alt="' + e.title + '">' : '') +
           '<div class="past-body">' +
-          '<span class="event-type-tag">' + emoji + ' ' + e.type + '</span>' +
+          '<span class="event-type-tag">' + e.type + '</span>' +
           '<h3>' + e.title + '</h3>' +
-          (e.location ? '<div class="past-detail">📍 ' + e.location + '</div>' : '') +
-          '<div class="past-detail">🗓️ ' + dateStr + (e.time ? ' · ' + e.time : '') + '</div>' +
-          (e.volunteers ? '<div class="past-detail">🙋 ' + e.volunteers + ' volunteers</div>' : '') +
+          (e.location ? '<div class="past-detail">' + e.location + '</div>' : '') +
+          '<div class="past-detail">' + dateStr + (e.time ? ' · ' + e.time : '') + '</div>' +
+          (e.volunteers ? '<div class="past-detail">' + e.volunteers + ' volunteers</div>' : '') +
           '</div></div>';
       });
     })
