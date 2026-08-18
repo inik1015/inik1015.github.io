@@ -221,19 +221,29 @@
       <div id="mini-events-list">
         <p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Loading events...</p>
       </div>
-      <a href="#events" class="see-all-events">See all events →</a>
+      <a href="#events" class="see-all-events">See all upcoming events →</a>
     </div>
   </div>
 </section>
 
 <section class="events-section" id="events">
   <div class="section-center">
+    <p class="section-label">Get Outside</p>
+    <h2>Upcoming Events</h2>
+  </div>
+  <div class="events-grid" id="upcoming-events-grid">
+    <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading events...</p>
+  </div>
+  <p class="events-provided">🎒 For trail cleanups: gloves, water, snacks, trash buckets, and trash pickers are all provided — just bring yourself and closed-toe shoes!</p>
+
+  <div class="past-events-label">
     <p class="section-label">Look Back</p>
     <h2>Past Events</h2>
   </div>
-  <div class="past-grid" id="past-events-grid">
+  <div class="past-grid" id="past-events-preview">
     <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading past events...</p>
   </div>
+  <a href="past-events.html" class="see-all-link">View full event archive →</a>
 </section>
 
 
@@ -561,7 +571,8 @@
   }
 
   const miniList = document.getElementById('mini-events-list');
-  const pastGrid = document.getElementById('past-events-grid');
+  const upcomingGrid = document.getElementById('upcoming-events-grid');
+  const pastPreview = document.getElementById('past-events-preview');
 
   const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID;
   fetch(eventsUrl)
@@ -588,6 +599,7 @@
       const upcoming = events.filter(e => e.dateObj >= today).sort((a,b) => a.dateObj - b.dateObj);
       const past = events.filter(e => e.dateObj < today).sort((a,b) => b.dateObj - a.dateObj);
 
+      // Mini list (hero)
       miniList.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">No upcoming events right now — check back soon!</p>';
       upcoming.slice(0, 4).forEach(e => {
         const { month, day } = formatEventDate(e.dateObj);
@@ -600,10 +612,27 @@
           '</div></div>';
       });
 
-      pastGrid.innerHTML = past.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No past events yet.</p>';
-      past.slice(0, 6).forEach(e => {
+      // Full Upcoming Events grid
+      upcomingGrid.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No upcoming events right now — check back soon!</p>';
+      upcoming.forEach(e => {
+        const { month, day } = formatEventDate(e.dateObj);
+        const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
+        upcomingGrid.innerHTML += '<div class="event-card">' +
+          '<div class="event-date-badge"><div class="event-month">' + month + '</div><div class="event-day">' + day + '</div></div>' +
+          '<div class="event-body">' +
+          '<span class="event-type-tag" style="background:#E4F2DC; color:#1E5C14;">' + emoji + ' ' + e.type + '</span>' +
+          '<h3>' + e.title + '</h3>' +
+          (e.location ? '<div class="event-detail"><span>📍</span><span>' + e.location + '</span></div>' : '') +
+          (e.time ? '<div class="event-detail"><span>🕐</span><span>' + e.time + '</span></div>' : '') +
+          '<a href="#contact" class="btn-event">Sign Up →</a>' +
+          '</div></div>';
+      });
+
+      // Past Events preview (3 most recent)
+      pastPreview.innerHTML = past.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No past events yet.</p>';
+      past.slice(0, 3).forEach(e => {
         const dateStr = e.dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-        pastGrid.innerHTML += '<div class="past-card">' +
+        pastPreview.innerHTML += '<div class="past-card">' +
           (e.photo ? '<img src="' + e.photo + '" alt="' + e.title + '">' : '') +
           '<div class="past-body">' +
           '<h3>' + e.title + '</h3>' +
@@ -615,7 +644,8 @@
     })
     .catch(() => {
       miniList.innerHTML = '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Could not load events.</p>';
-      pastGrid.innerHTML = '';
+      upcomingGrid.innerHTML = '';
+      pastPreview.innerHTML = '';
     });
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
