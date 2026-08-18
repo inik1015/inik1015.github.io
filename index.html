@@ -107,27 +107,6 @@
 
   .volunteer-section { background: linear-gradient(135deg, #EDF7E8, #D4EBC8); text-align: center; }
   .volunteer-section p { color: #3A5C2C; max-width: 500px; margin: 0 auto 2rem; line-height: 1.7; }
-  .events-section { background: white; }
-  .events-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 2rem auto 0; }
-  .event-card { background: #F2F9EE; border: 1px solid #C8DFC0; border-radius: 14px; overflow: hidden; }
-  .event-date-badge { background: #1E5C14; color: white; padding: 0.9rem 1.25rem; }
-  .event-date-badge .event-month { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; }
-  .event-date-badge .event-day { font-size: 1.6rem; font-weight: 800; font-family: 'Merriweather', serif; }
-  .event-body { padding: 1.25rem; }
-  .event-body h3 { font-size: 1rem; font-weight: 700; color: #1A3D10; margin-bottom: 0.6rem; }
-  .event-detail { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.82rem; color: #3A5C2C; margin-bottom: 0.4rem; line-height: 1.5; }
-  .event-detail span:first-child { flex-shrink: 0; }
-  .btn-event { margin-top: 0.8rem; display: inline-block; background: #D4621A; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.82rem; text-decoration: none; transition: background 0.2s; }
-  .btn-event:hover { background: #B5501A; }
-  .events-provided { text-align: center; font-size: 0.85rem; color: #5A7A4A; max-width: 600px; margin: 1.5rem auto 0; line-height: 1.6; }
-  .past-events-label { text-align: center; margin-top: 3.5rem; }
-  .past-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 1.5rem auto 0; }
-  .past-card { background: #F2F9EE; border: 1px solid #C8DFC0; border-radius: 14px; overflow: hidden; }
-  .past-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
-  .past-body { padding: 1.1rem 1.25rem; }
-  .past-body h3 { font-size: 0.95rem; font-weight: 700; color: #1A3D10; margin-bottom: 0.5rem; }
-  .past-detail { font-size: 0.8rem; color: #5A7A4A; margin-bottom: 0.25rem; line-height: 1.5; }
-  .event-type-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(255,255,255,0.25); padding: 2px 9px; border-radius: 10px; margin-bottom: 6px; }
   .volunteer-roles { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
   .role-tag { background: white; color: #1E5C14; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1.5px solid #A0C890; }
 
@@ -196,7 +175,7 @@
     <li><a href="#resources">Resources</a></li>
     <li><a href="#research">Research</a></li>
     <li><a href="#volunteer">Volunteer</a></li>
-    <li><a href="#events">Events</a></li>
+    <li><a href="past-events.html">Past Events</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#donate" class="btn-donate-nav">Donate</a></li>
@@ -221,29 +200,9 @@
       <div id="mini-events-list">
         <p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Loading events...</p>
       </div>
-      <a href="#events" class="see-all-events">See all upcoming events →</a>
+      <a href="past-events.html" class="see-all-events">Past events →</a>
     </div>
   </div>
-</section>
-
-<section class="events-section" id="events">
-  <div class="section-center">
-    <p class="section-label">Get Outside</p>
-    <h2>Upcoming Events</h2>
-  </div>
-  <div class="events-grid" id="upcoming-events-grid">
-    <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading events...</p>
-  </div>
-  <p class="events-provided">🎒 For trail cleanups: gloves, water, snacks, trash buckets, and trash pickers are all provided — just bring yourself and closed-toe shoes!</p>
-
-  <div class="past-events-label">
-    <p class="section-label">Look Back</p>
-    <h2>Past Events</h2>
-  </div>
-  <div class="past-grid" id="past-events-preview">
-    <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading past events...</p>
-  </div>
-  <a href="past-events.html" class="see-all-link">View full event archive →</a>
 </section>
 
 
@@ -571,8 +530,6 @@
   }
 
   const miniList = document.getElementById('mini-events-list');
-  const upcomingGrid = document.getElementById('upcoming-events-grid');
-  const pastPreview = document.getElementById('past-events-preview');
 
   const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID;
   fetch(eventsUrl)
@@ -590,16 +547,12 @@
           type: row.c[1]?.v || 'Event',
           title: row.c[2]?.v || '',
           location: row.c[3]?.v || '',
-          time: row.c[4]?.v || '',
-          volunteers: row.c[5]?.v || '',
-          photo: row.c[6]?.v || ''
+          time: row.c[4]?.v || ''
         };
       }).filter(e => e.dateObj);
 
       const upcoming = events.filter(e => e.dateObj >= today).sort((a,b) => a.dateObj - b.dateObj);
-      const past = events.filter(e => e.dateObj < today).sort((a,b) => b.dateObj - a.dateObj);
 
-      // Mini list (hero)
       miniList.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">No upcoming events right now — check back soon!</p>';
       upcoming.slice(0, 4).forEach(e => {
         const { month, day } = formatEventDate(e.dateObj);
@@ -611,41 +564,9 @@
           '<p>' + [e.location, e.time].filter(Boolean).join(' · ') + '</p>' +
           '</div></div>';
       });
-
-      // Full Upcoming Events grid
-      upcomingGrid.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No upcoming events right now — check back soon!</p>';
-      upcoming.forEach(e => {
-        const { month, day } = formatEventDate(e.dateObj);
-        const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
-        upcomingGrid.innerHTML += '<div class="event-card">' +
-          '<div class="event-date-badge"><div class="event-month">' + month + '</div><div class="event-day">' + day + '</div></div>' +
-          '<div class="event-body">' +
-          '<span class="event-type-tag" style="background:#E4F2DC; color:#1E5C14;">' + emoji + ' ' + e.type + '</span>' +
-          '<h3>' + e.title + '</h3>' +
-          (e.location ? '<div class="event-detail"><span>📍</span><span>' + e.location + '</span></div>' : '') +
-          (e.time ? '<div class="event-detail"><span>🕐</span><span>' + e.time + '</span></div>' : '') +
-          '<a href="#contact" class="btn-event">Sign Up →</a>' +
-          '</div></div>';
-      });
-
-      // Past Events preview (3 most recent)
-      pastPreview.innerHTML = past.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No past events yet.</p>';
-      past.slice(0, 3).forEach(e => {
-        const dateStr = e.dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-        pastPreview.innerHTML += '<div class="past-card">' +
-          (e.photo ? '<img src="' + e.photo + '" alt="' + e.title + '">' : '') +
-          '<div class="past-body">' +
-          '<h3>' + e.title + '</h3>' +
-          (e.location ? '<div class="past-detail">📍 ' + e.location + '</div>' : '') +
-          '<div class="past-detail">🗓️ ' + dateStr + (e.time ? ' · ' + e.time : '') + '</div>' +
-          (e.volunteers ? '<div class="past-detail">🙋 ' + e.volunteers + ' volunteers</div>' : '') +
-          '</div></div>';
-      });
     })
     .catch(() => {
       miniList.innerHTML = '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Could not load events.</p>';
-      upcomingGrid.innerHTML = '';
-      pastPreview.innerHTML = '';
     });
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
