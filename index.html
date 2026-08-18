@@ -115,6 +115,7 @@
   .past-body { padding: 1.1rem 1.25rem; }
   .past-body h3 { font-size: 0.95rem; font-weight: 700; color: #1A3D10; margin-bottom: 0.5rem; }
   .past-detail { font-size: 0.8rem; color: #5A7A4A; margin-bottom: 0.25rem; line-height: 1.5; }
+  .event-type-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(255,255,255,0.25); padding: 2px 9px; border-radius: 10px; margin-bottom: 6px; }
   .volunteer-roles { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
   .role-tag { background: white; color: #1E5C14; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1.5px solid #A0C890; }
 
@@ -201,6 +202,25 @@
   <div class="hero-photo">
     <img src="hero-team.png" alt="TrailBlazersYouth team at Half Dome, Yosemite">
     <p class="hero-photo-caption">Our team on the summit of Half Dome, Yosemite — July 4th</p>
+  </div>
+</section>
+
+<section class="events-section" id="events">
+  <div class="section-center">
+    <p class="section-label">Get Outside</p>
+    <h2>Upcoming Events</h2>
+  </div>
+  <div class="events-grid" id="upcoming-events-grid">
+    <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading events...</p>
+  </div>
+  <p class="events-provided">🎒 For trail cleanups: gloves, water, snacks, trash buckets, and trash pickers are all provided — just bring yourself and closed-toe shoes!</p>
+
+  <div class="past-events-label">
+    <p class="section-label">Look Back</p>
+    <h2>Past Events</h2>
+  </div>
+  <div class="past-grid" id="past-events-grid">
+    <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading past events...</p>
   </div>
 </section>
 
@@ -371,55 +391,7 @@
   <a href="#contact" class="btn-primary">Apply to Volunteer</a>
 </section>
 
-<section class="events-section" id="events">
-  <div class="section-center">
-    <p class="section-label">Get Outside</p>
-    <h2>Upcoming Events</h2>
-  </div>
-  <div class="events-grid">
-    <div class="event-card">
-      <div class="event-date-badge">
-        <div class="event-month">AUG</div>
-        <div class="event-day">19</div>
-      </div>
-      <div class="event-body">
-        <h3>Trail Cleanup Day</h3>
-        <div class="event-detail"><span>📍</span><span>Spring Lake Park</span></div>
-        <div class="event-detail"><span>🕐</span><span>10:00 AM – 12:00 PM</span></div>
-        <a href="#contact" class="btn-event">Sign Up →</a>
-      </div>
-    </div>
-    <div class="event-card">
-      <div class="event-date-badge">
-        <div class="event-month">AUG</div>
-        <div class="event-day">20</div>
-      </div>
-      <div class="event-body">
-        <h3>Trail Cleanup Day</h3>
-        <div class="event-detail"><span>📍</span><span>Doran Regional Park</span></div>
-        <div class="event-detail"><span>🕐</span><span>9:00 AM – 12:00 PM</span></div>
-        <a href="#contact" class="btn-event">Sign Up →</a>
-      </div>
-    </div>
-  </div>
-  <p class="events-provided">🎒 Gloves, water, snacks, trash buckets, and trash pickers are all provided — just bring yourself and closed-toe shoes!</p>
 
-  <div class="past-events-label">
-    <p class="section-label">Look Back</p>
-    <h2>Past Events</h2>
-  </div>
-  <div class="past-grid">
-    <div class="past-card">
-      <img src="cleanup-riverfront.jpg" alt="Trail cleanup at Riverfront Regional Park">
-      <div class="past-body">
-        <h3>Trail Cleanup Day</h3>
-        <div class="past-detail">📍 Riverfront Regional Park</div>
-        <div class="past-detail">🗓️ August 17 · 9:00 AM – 12:00 PM</div>
-        <div class="past-detail">🙋 3 volunteers</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="about-section" id="about">
   <div class="section-center" style="margin-bottom: 2.5rem;">
@@ -547,6 +519,94 @@
     })
     .catch(() => {
       grid.innerHTML = '<div class="news-card"><div class="news-body"><div class="news-tag">Error</div><h3>Could not load news</h3><p>Please check back later.</p></div></div>';
+    });
+
+  // ---- Events (separate Google Sheet) ----
+  const EVENTS_SHEET_ID = '1oSUGyAle6bt5FPZwANEuVrhIv0P9_RFIOn5MGi7ibtg';
+  const EVENTS_GID = '0';
+  const EVENT_EMOJI = {
+    'Trail Cleanup': '🧹',
+    'Fundraising': '💰',
+    'Member Meeting': '🤝',
+    'Public Education': '📚',
+    'Event': '📅'
+  };
+
+  function parseEventDate(rawDate) {
+    if (!rawDate) return null;
+    if (typeof rawDate.v === 'object' && rawDate.v !== null) return new Date(rawDate.v);
+    if (typeof rawDate.v === 'string') {
+      const m = rawDate.v.match(/Date\((\d+),(\d+),(\d+)\)/);
+      if (m) return new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
+      const d = new Date(rawDate.v);
+      if (!isNaN(d)) return d;
+    }
+    return null;
+  }
+
+  function formatEventDate(d) {
+    return { month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(), day: d.getDate() };
+  }
+
+  const upcomingGrid = document.getElementById('upcoming-events-grid');
+  const pastGrid = document.getElementById('past-events-grid');
+
+  const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID;
+  fetch(eventsUrl)
+    .then(r => r.text())
+    .then(text => {
+      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+      const rows = json.table.rows;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      const events = rows.map(row => {
+        const dateObj = parseEventDate(row.c[0]);
+        return {
+          dateObj: dateObj,
+          type: row.c[1]?.v || 'Event',
+          title: row.c[2]?.v || '',
+          location: row.c[3]?.v || '',
+          time: row.c[4]?.v || '',
+          volunteers: row.c[5]?.v || '',
+          photo: row.c[6]?.v || ''
+        };
+      }).filter(e => e.dateObj);
+
+      const upcoming = events.filter(e => e.dateObj >= today).sort((a,b) => a.dateObj - b.dateObj);
+      const past = events.filter(e => e.dateObj < today).sort((a,b) => b.dateObj - a.dateObj);
+
+      upcomingGrid.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No upcoming events right now — check back soon!</p>';
+      upcoming.forEach(e => {
+        const { month, day } = formatEventDate(e.dateObj);
+        const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
+        upcomingGrid.innerHTML += '<div class="event-card">' +
+          '<div class="event-date-badge"><div class="event-month">' + month + '</div><div class="event-day">' + day + '</div></div>' +
+          '<div class="event-body">' +
+          '<span class="event-type-tag" style="background:#E4F2DC; color:#1E5C14;">' + emoji + ' ' + e.type + '</span>' +
+          '<h3>' + e.title + '</h3>' +
+          (e.location ? '<div class="event-detail"><span>📍</span><span>' + e.location + '</span></div>' : '') +
+          (e.time ? '<div class="event-detail"><span>🕐</span><span>' + e.time + '</span></div>' : '') +
+          '<a href="#contact" class="btn-event">Sign Up →</a>' +
+          '</div></div>';
+      });
+
+      pastGrid.innerHTML = past.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No past events yet.</p>';
+      past.slice(0, 6).forEach(e => {
+        const dateStr = e.dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+        pastGrid.innerHTML += '<div class="past-card">' +
+          (e.photo ? '<img src="' + e.photo + '" alt="' + e.title + '">' : '') +
+          '<div class="past-body">' +
+          '<h3>' + e.title + '</h3>' +
+          (e.location ? '<div class="past-detail">📍 ' + e.location + '</div>' : '') +
+          '<div class="past-detail">🗓️ ' + dateStr + (e.time ? ' · ' + e.time : '') + '</div>' +
+          (e.volunteers ? '<div class="past-detail">🙋 ' + e.volunteers + ' volunteers</div>' : '') +
+          '</div></div>';
+      });
+    })
+    .catch(() => {
+      upcomingGrid.innerHTML = '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Could not load events.</p>';
+      pastGrid.innerHTML = '';
     });
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
