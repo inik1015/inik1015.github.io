@@ -146,15 +146,10 @@
       const today = new Date();
       today.setHours(0,0,0,0);
 
-      // TEMP DEBUG: show raw row count and raw date values
-      console.log('Raw rows from sheet:', rows.length, rows.map(r => r.c[0]?.v));
-
-      const rawEvents = rows.map(row => {
-        const rawDateStr = row.c[0]?.v;
+      const events = rows.map(row => {
         const dateObj = parseEventDate(row.c[0]);
         return {
           dateObj: dateObj,
-          rawDateStr: rawDateStr,
           type: row.c[1]?.v || 'Event',
           title: row.c[2]?.v || '',
           location: row.c[3]?.v || '',
@@ -162,16 +157,11 @@
           volunteers: row.c[5]?.v || '',
           photo: row.c[6]?.v || ''
         };
-      });
-      const events = rawEvents.filter(e => e.dateObj);
-      const failed = rawEvents.filter(e => !e.dateObj && e.rawDateStr);
+      }).filter(e => e.dateObj);
 
       const past = events.filter(e => e.dateObj < today).sort((a,b) => b.dateObj - a.dateObj);
 
       grid.innerHTML = past.length ? '' : '<p class="empty-msg">No past events yet — check back soon!</p>';
-      if (failed.length) {
-        grid.innerHTML += '<p style="grid-column:1/-1; font-size:0.75rem; color:#D4621A;">⚠️ Could not read date for: ' + failed.map(e => JSON.stringify(e.rawDateStr)).join(', ') + '</p>';
-      }
       past.forEach(e => {
         const dateStr = e.dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
