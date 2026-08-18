@@ -136,7 +136,7 @@
   }
 
   const grid = document.getElementById('past-events-full');
-  const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID + '&_ts=' + Date.now();
+  const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID + '&headers=1&_ts=' + Date.now();
 
   fetch(eventsUrl, { cache: 'no-store' })
     .then(r => r.text())
