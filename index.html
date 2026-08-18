@@ -517,11 +517,18 @@
     if (!rawDate) return null;
     if (typeof rawDate.v === 'object' && rawDate.v !== null) return new Date(rawDate.v);
     if (typeof rawDate.v === 'string') {
-      const m = rawDate.v.match(/Date\((\d+),(\d+),(\d+)\)/);
+      const str = rawDate.v.trim();
+      const m = str.match(/Date\((\d+),(\d+),(\d+)\)/);
       if (m) return new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
-      const ymd = rawDate.v.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
       if (ymd) return new Date(parseInt(ymd[1]), parseInt(ymd[2]) - 1, parseInt(ymd[3]));
-      const d = new Date(rawDate.v);
+      const monthNames = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+      const mdy = str.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+      if (mdy) {
+        const mi = monthNames.indexOf(mdy[1].toLowerCase());
+        if (mi !== -1) return new Date(parseInt(mdy[3]), mi, parseInt(mdy[2]));
+      }
+      const d = new Date(str);
       if (!isNaN(d)) return d;
     }
     return null;
