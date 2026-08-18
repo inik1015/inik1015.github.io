@@ -88,6 +88,7 @@
   .news-img.img1 { background: linear-gradient(135deg, #FFD4A8, #FFB87A); }
   .news-img.img2 { background: linear-gradient(135deg, #B8E0A8, #7FCF70); }
   .news-img.img3 { background: linear-gradient(135deg, #C8DFC0, #8FBF80); }
+  .news-img-photo { width: 100%; height: 120px; object-fit: cover; display: block; }
   .news-body { padding: 1rem; }
   .news-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #D4621A; margin-bottom: 0.4rem; }
   .news-card h3 { font-size: 0.9rem; font-weight: 700; color: #1A2E14; line-height: 1.4; margin-bottom: 0.4rem; }
@@ -245,7 +246,7 @@
       </div>
     </div>
   </div>
-
+  <a href="news-archive.html" class="see-all-link">View full news archive →</a>
 </section>
 
 <section class="resources-section" id="incidents" style="background: #F2F9EE;">
@@ -452,30 +453,32 @@
     return '';
   }
 
-  function fetchSheet(sheet) {
+  function fetchSheetAll(sheet) {
     const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid + '&_ts=' + Date.now();
     return fetch(url, { cache: 'no-store' })
       .then(r => r.text())
       .then(text => {
         const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-        return json.table.rows[0] || null;
+        return json.table.rows || [];
       });
   }
 
   const grid = document.getElementById('news-grid');
   grid.innerHTML = '';
 
-  Promise.all(SHEETS.map(s => fetchSheet(s)))
-    .then(rows => {
-      rows.forEach((row, i) => {
+  Promise.all(SHEETS.map(s => fetchSheetAll(s)))
+    .then(allRows => {
+      allRows.forEach((rows, i) => {
+        const row = rows[0];
         if (!row) return;
         const sheet = SHEETS[i];
         const title = row.c[0]?.v || '';
         const desc = row.c[1]?.v || '';
         const date = parseDate(row.c[2]);
         const link = row.c[3]?.v || '';
+        const photo = row.c[4]?.v || '';
         grid.innerHTML += '<div class="news-card">' +
-          '<div class="news-img ' + sheet.cls + '">' + sheet.emoji + '</div>' +
+          (photo ? '<img class="news-img-photo" src="' + photo + '" alt="' + title + '">' : '<div class="news-img ' + sheet.cls + '"></div>') +
           '<div class="news-body">' +
           '<div class="news-tag">' + sheet.tag + '</div>' +
           '<h3>' + title + '</h3>' +
