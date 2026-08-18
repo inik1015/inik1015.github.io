@@ -466,7 +466,7 @@
   }
 
   function fetchSheet(sheet) {
-    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid + '&_ts=' + Date.now();
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid + '&headers=1&_ts=' + Date.now();
     return fetch(url, { cache: 'no-store' })
       .then(r => r.text())
       .then(text => {
@@ -540,7 +540,7 @@
 
   const miniList = document.getElementById('mini-events-list');
 
-  const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID + '&_ts=' + Date.now();
+  const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID + '&headers=1&_ts=' + Date.now();
   fetch(eventsUrl, { cache: 'no-store' })
     .then(r => r.text())
     .then(text => {
