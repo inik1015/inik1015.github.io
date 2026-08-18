@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QD6GG0JHWZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QD6GG0JHWZ');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire News Archive | TrailBlazersYouth</title>
+<meta name="description" content="A full archive of TrailBlazersYouth fire news — breaking incidents, research updates, and community stories.">
+<link rel="canonical" href="https://trailblazersyouth.org/news-archive.html">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: #F7FBF4; color: #1A2E14; overflow-x: hidden; }
+
+  nav { background: #F7FBF4; border-bottom: 1px solid #C8DFC0; padding: 0 2rem; height: 80px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.2rem; color: #1E5C14; text-decoration: none; }
+  .logo img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+  .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .logo-sub { font-size: 0.65rem; font-weight: 600; color: #5A8A4A; letter-spacing: 0.04em; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; color: #2E5A20; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; }
+  .nav-links a:hover { color: #D4621A; }
+  .btn-donate-nav { background: #D4621A; color: white !important; padding: 8px 20px; border-radius: 20px; font-weight: 700 !important; transition: background 0.2s !important; }
+  .btn-donate-nav:hover { background: #B5501A !important; }
+
+  .page-header { background: linear-gradient(135deg, #EDF7E8 0%, #D4EBC8 50%, #EAF4E4 100%); padding: 3.5rem 2rem; text-align: center; }
+  .back-link { display: inline-block; margin-bottom: 1.2rem; color: #1E5C14; font-weight: 700; font-size: 0.85rem; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+  .section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D4621A; margin-bottom: 0.5rem; }
+  h1 { font-family: 'Merriweather', serif; font-size: 2.3rem; color: #1A3D10; }
+  .page-header p { color: #3A5C2C; margin-top: 0.8rem; font-size: 1rem; }
+
+  .filter-tabs { display: flex; justify-content: center; gap: 0.6rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .filter-tab { background: white; border: 1.5px solid #A0C890; color: #1E5C14; padding: 7px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background 0.2s; }
+  .filter-tab:hover { background: #E4F2DC; }
+  .filter-tab.active { background: #1E5C14; color: white; border-color: #1E5C14; }
+
+  main { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .news-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid #C8DFC0; }
+  .news-img { height: 150px; display: flex; align-items: center; justify-content: center; }
+  .news-img-photo { width: 100%; height: 150px; object-fit: cover; display: block; }
+  .news-img.img1 { background: linear-gradient(135deg, #FFD4A8, #FFB87A); }
+  .news-img.img2 { background: linear-gradient(135deg, #B8E0A8, #7FCF70); }
+  .news-img.img3 { background: linear-gradient(135deg, #C8DFC0, #8FBF80); }
+  .news-body { padding: 1.2rem 1.3rem; }
+  .news-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #D4621A; margin-bottom: 0.5rem; display: inline-block; }
+  .news-card h3 { font-size: 1rem; font-weight: 700; color: #1A2E14; line-height: 1.4; margin-bottom: 0.5rem; }
+  .news-card p { font-size: 0.85rem; color: #5A7A4A; line-height: 1.55; margin-bottom: 0.5rem; }
+  .news-date { font-size: 0.78rem; color: #8AAA7A; margin-top: 0.5rem; font-weight: 600; }
+  .res-link { font-size: 0.8rem; color: #D4621A; font-weight: 700; text-decoration: none; }
+  .empty-msg { text-align: center; color: #8AAA7A; grid-column: 1/-1; padding: 2rem 0; }
+
+  footer { background: #0F3008; color: rgba(255,255,255,0.7); text-align: center; padding: 2rem; font-size: 0.85rem; }
+  footer .footer-logo { color: #8FD470; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  footer .footer-logo img { width: 28px; height: 28px; border-radius: 50%; }
+  footer p { margin-top: 0.3rem; }
+  footer a { color: #8FD470; text-decoration: none; }
+
+  @media (max-width: 700px) {
+    h1 { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="TrailBlazersYouth logo">
+    <div class="logo-text">
+      <span>TrailBlazersYouth</span>
+      <span class="logo-sub">Wildfire Prevention</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#mission">Our Mission</a></li>
+    <li><a href="index.html#news">Fire News</a></li>
+    <li><a href="index.html#volunteer">Volunteer</a></li>
+    <li><a href="past-events.html">Past Events</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="index.html#donate" class="btn-donate-nav">Donate</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <a href="index.html#news" class="back-link">← Back to Fire News</a>
+  <p class="section-label">Stay Informed</p>
+  <h1>Fire News Archive</h1>
+  <p>Every breaking update, research finding, and community story we've shared.</p>
+  <div class="filter-tabs">
+    <button class="filter-tab active" data-filter="all">All</button>
+    <button class="filter-tab" data-filter="Breaking">Breaking</button>
+    <button class="filter-tab" data-filter="Research">Research</button>
+    <button class="filter-tab" data-filter="Community">Community</button>
+  </div>
+</div>
+
+<main>
+  <div class="news-grid" id="news-full-grid">
+    <p class="empty-msg">Loading news archive...</p>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">
+    <img src="logo.png" alt="logo">
+    TrailBlazersYouth
+  </div>
+  <p>A nonprofit organization dedicated to wildfire prevention</p>
+  <p style="margin-top: 0.5rem;"><a href="index.html#privacy">Privacy Policy</a> · <a href="index.html#terms">Terms</a> · <a href="index.html#donate">Donate</a></p>
+  <p style="margin-top: 0.8rem; font-size: 0.75rem; opacity: 0.6;">© 2026 TrailBlazersYouth. All rights reserved.</p>
+</footer>
+
+<script>
+  const SHEET_ID = '1vmSnFem0VvAi0GVsmDbvKWMJb9Vak5LnjumvLykUc7I';
+  const SHEETS = [
+    { gid: '0', cls: 'img1', tag: 'Breaking' },
+    { gid: '388633376', cls: 'img2', tag: 'Research' },
+    { gid: '1068677460', cls: 'img3', tag: 'Community' }
+  ];
+
+  function parseDate(rawDate) {
+    if (!rawDate) return '';
+    if (typeof rawDate.v === 'string') return rawDate.v;
+    if (rawDate.f) return rawDate.f;
+    if (typeof rawDate.v === 'object' && rawDate.v !== null) {
+      const d = new Date(rawDate.v);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+    return '';
+  }
+
+  function fetchSheetAll(sheet) {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid + '&_ts=' + Date.now();
+    return fetch(url, { cache: 'no-store' })
+      .then(r => r.text())
+      .then(text => {
+        const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+        return (json.table.rows || []).map(row => ({
+          tag: sheet.tag,
+          cls: sheet.cls,
+          title: row.c[0]?.v || '',
+          desc: row.c[1]?.v || '',
+          date: parseDate(row.c[2]),
+          link: row.c[3]?.v || '',
+          photo: row.c[4]?.v || ''
+        }));
+      });
+  }
+
+  const grid = document.getElementById('news-full-grid');
+  let allItems = [];
+
+  function renderItems(filter) {
+    const items = filter === 'all' ? allItems : allItems.filter(i => i.tag === filter);
+    grid.innerHTML = items.length ? '' : '<p class="empty-msg">No news items in this category yet.</p>';
+    items.forEach(item => {
+      grid.innerHTML += '<div class="news-card">' +
+        (item.photo ? '<img class="news-img-photo" src="' + item.photo + '" alt="' + item.title + '">' : '<div class="news-img ' + item.cls + '"></div>') +
+        '<div class="news-body">' +
+        '<span class="news-tag">' + item.tag + '</span>' +
+        '<h3>' + item.title + '</h3>' +
+        '<p>' + item.desc + '</p>' +
+        (item.link ? '<a href="' + item.link + '" target="_blank" class="res-link">Read more →</a>' : '') +
+        '<div class="news-date">' + item.date + '</div>' +
+        '</div></div>';
+    });
+  }
+
+  Promise.all(SHEETS.map(s => fetchSheetAll(s)))
+    .then(results => {
+      allItems = results.flat();
+      renderItems('all');
+    })
+    .catch(() => {
+      grid.innerHTML = '<p class="empty-msg">Could not load news archive. Please check back later.</p>';
+    });
+
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderItems(btn.dataset.filter);
+    });
+  });
+</script>
+</body>
+</html>
