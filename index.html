@@ -548,6 +548,7 @@
       const rows = json.table.rows;
       const today = new Date();
       today.setHours(0,0,0,0);
+      console.log('Raw rows from sheet:', rows.length, rows.map(r => r.c[0]?.v));
 
       const rawEvents = rows.map(row => {
         const rawDateStr = row.c[0]?.v;
@@ -570,6 +571,7 @@
       if (failed.length) {
         miniList.innerHTML += '<p style="font-size:0.7rem; color:#D4621A; margin-top:0.5rem;">⚠️ Could not read date for: ' + failed.map(e => JSON.stringify(e.rawDateStr)).join(', ') + '</p>';
       }
+      miniList.innerHTML += '<p style="font-size:0.65rem; color:#999; margin-top:0.5rem; word-break:break-all;">DEBUG raw dates: ' + rawEvents.map(e => JSON.stringify(e.rawDateStr) + '→' + (e.dateObj ? e.dateObj.toDateString() : 'FAILED')).join(' | ') + '</p>';
       upcoming.slice(0, 4).forEach(e => {
         const { month, day } = formatEventDate(e.dateObj);
         const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
