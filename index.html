@@ -46,6 +46,18 @@
   .hero-photo { max-width: 800px; margin: 3rem auto 0; }
   .hero-photo img { width: 100%; height: auto; border-radius: 20px; box-shadow: 0 12px 40px rgba(30,92,20,0.2); display: block; }
   .hero-photo-caption { margin-top: 0.9rem; font-size: 0.85rem; color: #5A7A4A; font-style: italic; }
+  .hero-events-row { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.5rem; max-width: 1000px; margin: 3rem auto 0; align-items: start; text-align: left; }
+  .hero-events-row .hero-photo { max-width: none; margin: 0; }
+  .hero-events-col { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 12px 40px rgba(30,92,20,0.1); }
+  .hero-events-col h3 { font-family: 'Merriweather', serif; font-size: 1.15rem; color: #1A3D10; margin-bottom: 1rem; }
+  .mini-event-card { display: flex; gap: 0.9rem; align-items: flex-start; padding: 0.8rem 0; border-bottom: 1px solid #E4F2DC; }
+  .mini-event-card:last-child { border-bottom: none; }
+  .mini-event-date { background: #1E5C14; color: white; border-radius: 10px; padding: 0.4rem 0.6rem; text-align: center; min-width: 52px; flex-shrink: 0; }
+  .mini-event-date .m { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; opacity: 0.85; }
+  .mini-event-date .d { font-size: 1.15rem; font-weight: 800; font-family: 'Merriweather', serif; line-height: 1.1; }
+  .mini-event-info h4 { font-size: 0.88rem; font-weight: 700; color: #1A3D10; margin-bottom: 3px; }
+  .mini-event-info p { font-size: 0.78rem; color: #5A7A4A; line-height: 1.4; margin: 0; }
+  .hero-events-col .see-all-events { display: block; text-align: center; margin-top: 1rem; color: #1E5C14; font-weight: 700; text-decoration: none; font-size: 0.85rem; }
   .btn-primary { background: #1E5C14; color: white; padding: 14px 32px; border-radius: 28px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: background 0.2s, transform 0.15s; display: inline-block; }
   .btn-primary:hover { background: #164A0E; transform: translateY(-1px); }
   .btn-secondary { background: white; color: #1E5C14; padding: 14px 32px; border-radius: 28px; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid #1E5C14; transition: all 0.2s; display: inline-block; }
@@ -162,7 +174,7 @@
   footer a { color: #8FD470; text-decoration: none; }
 
   @media (max-width: 700px) {
-    .mission-grid, .contact-grid, .news-grid, .resources-grid, .about-grid { grid-template-columns: 1fr; }
+    .mission-grid, .contact-grid, .news-grid, .resources-grid, .about-grid, .hero-events-row { grid-template-columns: 1fr; }
     .hero h1 { font-size: 2rem; }
   }
 </style>
@@ -199,23 +211,23 @@
     <a href="#volunteer" class="btn-primary">Get Involved</a>
     <a href="#resources" class="btn-secondary">Wildfire Resources</a>
   </div>
-  <div class="hero-photo">
-    <img src="hero-team.png" alt="TrailBlazersYouth team at Half Dome, Yosemite">
-    <p class="hero-photo-caption">Our team on the summit of Half Dome, Yosemite — July 4th</p>
+  <div class="hero-events-row">
+    <div class="hero-photo">
+      <img src="hero-team.png" alt="TrailBlazersYouth team at Half Dome, Yosemite">
+      <p class="hero-photo-caption">Our team on the summit of Half Dome, Yosemite — July 4th</p>
+    </div>
+    <div class="hero-events-col">
+      <h3>📅 Upcoming Events</h3>
+      <div id="mini-events-list">
+        <p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Loading events...</p>
+      </div>
+      <a href="#events" class="see-all-events">See all events →</a>
+    </div>
   </div>
 </section>
 
 <section class="events-section" id="events">
   <div class="section-center">
-    <p class="section-label">Get Outside</p>
-    <h2>Upcoming Events</h2>
-  </div>
-  <div class="events-grid" id="upcoming-events-grid">
-    <p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Loading events...</p>
-  </div>
-  <p class="events-provided">🎒 For trail cleanups: gloves, water, snacks, trash buckets, and trash pickers are all provided — just bring yourself and closed-toe shoes!</p>
-
-  <div class="past-events-label">
     <p class="section-label">Look Back</p>
     <h2>Past Events</h2>
   </div>
@@ -548,7 +560,7 @@
     return { month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(), day: d.getDate() };
   }
 
-  const upcomingGrid = document.getElementById('upcoming-events-grid');
+  const miniList = document.getElementById('mini-events-list');
   const pastGrid = document.getElementById('past-events-grid');
 
   const eventsUrl = 'https://docs.google.com/spreadsheets/d/' + EVENTS_SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + EVENTS_GID;
@@ -576,18 +588,15 @@
       const upcoming = events.filter(e => e.dateObj >= today).sort((a,b) => a.dateObj - b.dateObj);
       const past = events.filter(e => e.dateObj < today).sort((a,b) => b.dateObj - a.dateObj);
 
-      upcomingGrid.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">No upcoming events right now — check back soon!</p>';
-      upcoming.forEach(e => {
+      miniList.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">No upcoming events right now — check back soon!</p>';
+      upcoming.slice(0, 4).forEach(e => {
         const { month, day } = formatEventDate(e.dateObj);
         const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
-        upcomingGrid.innerHTML += '<div class="event-card">' +
-          '<div class="event-date-badge"><div class="event-month">' + month + '</div><div class="event-day">' + day + '</div></div>' +
-          '<div class="event-body">' +
-          '<span class="event-type-tag" style="background:#E4F2DC; color:#1E5C14;">' + emoji + ' ' + e.type + '</span>' +
-          '<h3>' + e.title + '</h3>' +
-          (e.location ? '<div class="event-detail"><span>📍</span><span>' + e.location + '</span></div>' : '') +
-          (e.time ? '<div class="event-detail"><span>🕐</span><span>' + e.time + '</span></div>' : '') +
-          '<a href="#contact" class="btn-event">Sign Up →</a>' +
+        miniList.innerHTML += '<div class="mini-event-card">' +
+          '<div class="mini-event-date"><div class="m">' + month + '</div><div class="d">' + day + '</div></div>' +
+          '<div class="mini-event-info">' +
+          '<h4>' + emoji + ' ' + e.title + '</h4>' +
+          '<p>' + [e.location, e.time].filter(Boolean).join(' · ') + '</p>' +
           '</div></div>';
       });
 
@@ -605,7 +614,7 @@
       });
     })
     .catch(() => {
-      upcomingGrid.innerHTML = '<p style="text-align:center; color:#8AAA7A; grid-column: 1/-1;">Could not load events.</p>';
+      miniList.innerHTML = '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Could not load events.</p>';
       pastGrid.innerHTML = '';
     });
 
