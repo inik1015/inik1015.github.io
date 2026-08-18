@@ -517,7 +517,7 @@
     if (!rawDate) return null;
     if (typeof rawDate.v === 'object' && rawDate.v !== null) return new Date(rawDate.v);
     if (typeof rawDate.v === 'string') {
-      const str = rawDate.v.trim();
+      const str = rawDate.v.replace(/\s+/g, ' ').trim();
       const m = str.match(/Date\((\d+),(\d+),(\d+)\)/);
       if (m) return new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
       const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -549,20 +549,27 @@
       const today = new Date();
       today.setHours(0,0,0,0);
 
-      const events = rows.map(row => {
+      const rawEvents = rows.map(row => {
+        const rawDateStr = row.c[0]?.v;
         const dateObj = parseEventDate(row.c[0]);
         return {
           dateObj: dateObj,
+          rawDateStr: rawDateStr,
           type: row.c[1]?.v || 'Event',
           title: row.c[2]?.v || '',
           location: row.c[3]?.v || '',
           time: row.c[4]?.v || ''
         };
-      }).filter(e => e.dateObj);
+      });
+      const events = rawEvents.filter(e => e.dateObj);
+      const failed = rawEvents.filter(e => !e.dateObj && e.rawDateStr);
 
       const upcoming = events.filter(e => e.dateObj >= today).sort((a,b) => a.dateObj - b.dateObj);
 
       miniList.innerHTML = upcoming.length ? '' : '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">No upcoming events right now — check back soon!</p>';
+      if (failed.length) {
+        miniList.innerHTML += '<p style="font-size:0.7rem; color:#D4621A; margin-top:0.5rem;">⚠️ Could not read date for: ' + failed.map(e => JSON.stringify(e.rawDateStr)).join(', ') + '</p>';
+      }
       upcoming.slice(0, 4).forEach(e => {
         const { month, day } = formatEventDate(e.dateObj);
         const emoji = EVENT_EMOJI[e.type] || EVENT_EMOJI['Event'];
