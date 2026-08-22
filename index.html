@@ -123,6 +123,8 @@
   .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem; max-width: 940px; margin: 2rem auto 0; }
   .team-card { background: #F2F9EE; border: 1px solid #C8DFC0; border-radius: 16px; padding: 1.6rem 1.4rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
   .team-photo { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; object-position: center top; box-shadow: 0 4px 16px rgba(30,92,20,0.15); margin-bottom: 1rem; }
+  .team-photo-wrap { width: 110px; height: 110px; border-radius: 50%; overflow: hidden; box-shadow: 0 4px 16px rgba(30,92,20,0.15); margin-bottom: 1rem; }
+  .team-photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .team-initial { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #D4EBC8, #A0C890); display: flex; align-items: center; justify-content: center; font-family: 'Merriweather', serif; font-size: 2.4rem; font-weight: 700; color: #1E5C14; margin-bottom: 1rem; }
   .team-name { font-family: 'Merriweather', serif; font-size: 1.1rem; color: #1A3D10; margin-bottom: 0.7rem; }
   .team-bio { font-size: 0.85rem; color: #3A5C2C; line-height: 1.65; text-align: left; }
@@ -402,14 +404,14 @@
   <div class="team-grid">
 
     <div class="team-card">
-      <img class="team-photo" src="headshots/asher.png" alt="Asher Rexing">
+      <img class="team-photo" src="headshots/asher.png" alt="Asher Rexing" style="object-position: center 28%;">
       <h4 class="team-name">Asher Rexing</h4>
       <p class="team-bio clamped">I began backpacking in the 8th grade during a trip to Yosemite and have continued outdoor activities since. I am Wilderness Survival and First Aid Certified and the founder of Mira Costa's Outdoors Club, which organizes hiking programs for kids in the community who wouldn't otherwise have the opportunity. Watching wildfires devastate the Palisades and the San Bernardino Mountains taught me why prevention education matters so much. I've also seen firsthand how nature impacts kids and makes them better students and friends. That's the case I want to bring to youth nationwide, and why I'm proud to join this team.</p>
       <button class="team-bio-toggle">Read more</button>
     </div>
 
     <div class="team-card">
-      <img class="team-photo" src="headshots/oliver.png" alt="Oliver Harris">
+      <div class="team-photo-wrap"><img src="headshots/oliver.png" alt="Oliver Harris" style="object-position: center 15%; transform: scale(1.25);"></div>
       <h4 class="team-name">Oliver Harris</h4>
       <p class="team-bio clamped">Nature needs protecting so it stays that way for future generations. The Palisades Fire showed how fast flames can wipe out homes, trees, and wildlife. As an Eagle Scout, I learned to respect and protect the outdoors.</p>
       <button class="team-bio-toggle">Read more</button>
