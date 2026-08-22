@@ -118,6 +118,19 @@
   .about-text .about-title { font-size: 0.8rem; font-weight: 700; color: #D4621A; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
   .about-text p { color: #3A5C2C; line-height: 1.8; font-size: 0.95rem; margin-bottom: 0.8rem; }
 
+  .team-subhead { text-align: center; margin-top: 3.5rem; }
+  .team-subhead h3 { font-family: 'Merriweather', serif; font-size: 1.5rem; color: #1A3D10; }
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem; max-width: 940px; margin: 2rem auto 0; }
+  .team-card { background: #F2F9EE; border: 1px solid #C8DFC0; border-radius: 16px; padding: 1.6rem 1.4rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .team-photo { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; object-position: center top; box-shadow: 0 4px 16px rgba(30,92,20,0.15); margin-bottom: 1rem; }
+  .team-initial { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #D4EBC8, #A0C890); display: flex; align-items: center; justify-content: center; font-family: 'Merriweather', serif; font-size: 2.4rem; font-weight: 700; color: #1E5C14; margin-bottom: 1rem; }
+  .team-name { font-family: 'Merriweather', serif; font-size: 1.1rem; color: #1A3D10; margin-bottom: 0.7rem; }
+  .team-bio { font-size: 0.85rem; color: #3A5C2C; line-height: 1.65; text-align: left; }
+  .team-bio.clamped { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .team-bio-toggle { background: none; border: none; color: #D4621A; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-top: 0.55rem; padding: 0; align-self: flex-start; }
+  .team-bio-toggle:hover { text-decoration: underline; }
+  .team-bio-empty { font-size: 0.85rem; color: #8AAA7A; font-style: italic; }
+
   .donate-section { background: #1E5C14; color: white; text-align: center; padding: 5rem 2rem; }
   .donate-section .section-label { color: rgba(255,255,255,0.65); }
   .donate-section h2 { color: white; font-family: 'Merriweather', serif; margin-bottom: 1rem; }
@@ -364,12 +377,12 @@
 
 <section class="about-section" id="about">
   <div class="section-center" style="margin-bottom: 2.5rem;">
-    <p class="section-label">Who Am I</p>
-    <h2>Meet the Founder</h2>
+    <p class="section-label">Who We Are</p>
+    <h2>Meet the Team</h2>
   </div>
   <div class="about-grid">
     <div style="text-align: center;">
-      <img src="daniel.png" alt="Daniel" style="width: 280px; height: 280px; border-radius: 50%; object-fit: cover; object-position: center top; box-shadow: 0 4px 20px rgba(30,92,20,0.15);">
+      <img src="headshots/daniel.png" alt="Daniel Chang" style="width: 280px; height: 280px; border-radius: 50%; object-fit: cover; object-position: center top; box-shadow: 0 4px 20px rgba(30,92,20,0.15);">
     </div>
     <div class="about-text">
       <h3>Daniel Chang</h3>
@@ -381,6 +394,53 @@
         <a href="https://www.instagram.com/danielchang2028/" target="_blank" class="social-btn">Instagram</a>
       </div>
     </div>
+  </div>
+
+  <div class="team-subhead">
+    <h3>Our Members</h3>
+  </div>
+  <div class="team-grid">
+
+    <div class="team-card">
+      <img class="team-photo" src="headshots/asher.png" alt="Asher Rexing">
+      <h4 class="team-name">Asher Rexing</h4>
+      <p class="team-bio clamped">I began backpacking in the 8th grade during a trip to Yosemite and have continued outdoor activities since. I am Wilderness Survival and First Aid Certified and the founder of Mira Costa's Outdoors Club, which organizes hiking programs for kids in the community who wouldn't otherwise have the opportunity. Watching wildfires devastate the Palisades and the San Bernardino Mountains taught me why prevention education matters so much. I've also seen firsthand how nature impacts kids and makes them better students and friends. That's the case I want to bring to youth nationwide, and why I'm proud to join this team.</p>
+      <button class="team-bio-toggle">Read more</button>
+    </div>
+
+    <div class="team-card">
+      <img class="team-photo" src="headshots/oliver.png" alt="Oliver Harris">
+      <h4 class="team-name">Oliver Harris</h4>
+      <p class="team-bio clamped">Nature needs protecting so it stays that way for future generations. The Palisades Fire showed how fast flames can wipe out homes, trees, and wildlife. As an Eagle Scout, I learned to respect and protect the outdoors.</p>
+      <button class="team-bio-toggle">Read more</button>
+    </div>
+
+    <div class="team-card">
+      <!-- Once the headshot is uploaded, replace the line below with:
+           <img class="team-photo" src="headshots/kaidin.png" alt="Kaidin Heise"> -->
+      <div class="team-initial">K</div>
+      <h4 class="team-name">Kaidin Heise</h4>
+      <p class="team-bio clamped">Nature has always been an important part of my life. I love going camping, backpacking, hiking, biking, and any other activities that allow me to explore the great outdoors. As an Eagle Scout, I realize how important it is to protect the environment, and save it for the future generations. As a Los Angeles resident, I have seen firsthand how devastating the Palisades Fires were, displacing countless people, and causing 120 students to come to my school. I believe it is of the utmost importance to address these fires, to ensure they do not occur on this level in the future.</p>
+      <button class="team-bio-toggle">Read more</button>
+    </div>
+
+    <div class="team-card">
+      <!-- Once the headshot is uploaded, replace the line below with:
+           <img class="team-photo" src="headshots/brighton.png" alt="Brighton Lipton"> -->
+      <div class="team-initial">B</div>
+      <h4 class="team-name">Brighton Lipton</h4>
+      <p class="team-bio clamped">Wildfire awareness is very important to me because I have seen how wildfires affect the people and environment around you. I live really close to Malibu, which was destroyed in the Palisades Fire two years ago, and saw first hand how devastated the people living there were. This fire also affected the whole environment around me since when the forests are wiped out and animals are displaced while landslides destroy the land. This affects my favorite animals, which are birds, significantly since it destroys the last remaining LA forests which are crucial to their survival. That is why I'm committed to spreading wildfire awareness, since most of these fires are human caused and can be stopped if the right awareness is spread.</p>
+      <button class="team-bio-toggle">Read more</button>
+    </div>
+
+    <div class="team-card">
+      <!-- Once the headshot is uploaded, replace the line below with:
+           <img class="team-photo" src="headshots/zach.png" alt="Zach Green"> -->
+      <div class="team-initial">Z</div>
+      <h4 class="team-name">Zach Green</h4>
+      <p class="team-bio-empty">Introduction coming soon.</p>
+    </div>
+
   </div>
 </section>
 
@@ -568,6 +628,21 @@
     .catch(() => {
       miniList.innerHTML = '<p style="text-align:center; color:#8AAA7A; font-size:0.85rem;">Could not load events.</p>';
     });
+
+  // ---- Team member "Read more" toggles ----
+  document.querySelectorAll('.team-bio-toggle').forEach(btn => {
+    const bio = btn.previousElementSibling;
+    requestAnimationFrame(() => {
+      if (bio.scrollHeight <= bio.clientHeight + 2) {
+        btn.style.display = 'none';
+        bio.classList.remove('clamped');
+      }
+    });
+    btn.addEventListener('click', () => {
+      bio.classList.toggle('clamped');
+      btn.textContent = bio.classList.contains('clamped') ? 'Read more' : 'Read less';
+    });
+  });
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
