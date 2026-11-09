@@ -128,7 +128,8 @@
 
   function parseDate(rawDate) {
     if (!rawDate) return '';
-    if (typeof rawDate.v === 'string') return rawDate.v;
+    if (typeof rawDate.v === 'string' && rawDate.v.indexOf('Date(') === 0 && rawDate.f) return rawDate.f;
+    if (typeof rawDate.v === 'string') return rawDate.v.trim();
     if (rawDate.f) return rawDate.f;
     if (typeof rawDate.v === 'object' && rawDate.v !== null) {
       const d = new Date(rawDate.v);
@@ -137,13 +138,32 @@
     return '';
   }
 
+  // Convert a sheet date cell to a sortable timestamp (newest first sorting)
+  function toTime(rawDate) {
+    if (!rawDate || rawDate.v == null) return 0;
+    const str = String(rawDate.v).replace(/\s+/g, ' ').trim();
+    const g = str.match(/^Date\((\d+),(\d+),(\d+)/);
+    if (g) return new Date(+g[1], +g[2], +g[3]).getTime();
+    const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (ymd) return new Date(+ymd[1], +ymd[2] - 1, +ymd[3]).getTime();
+    const months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+    const mdy = str.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+    if (mdy) {
+      const mi = months.indexOf(mdy[1].toLowerCase());
+      if (mi !== -1) return new Date(+mdy[3], mi, +mdy[2]).getTime();
+    }
+    const t = Date.parse(str);
+    return isNaN(t) ? 0 : t;
+  }
+
   function fetchSheetAll(sheet) {
     const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + sheet.gid + '&_ts=' + Date.now();
     return fetch(url, { cache: 'no-store' })
       .then(r => r.text())
       .then(text => {
         const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-        return (json.table.rows || []).map(row => ({
+        return (json.table.rows || []).filter(row => row && row.c && row.c[0] && row.c[0].v).map(row => ({
+          time: toTime(row.c[2]),
           tag: sheet.tag,
           cls: sheet.cls,
           title: row.c[0]?.v || '',
@@ -176,7 +196,7 @@
 
   Promise.all(SHEETS.map(s => fetchSheetAll(s)))
     .then(results => {
-      allItems = results.flat();
+      allItems = results.flat().sort((a, b) => b.time - a.time);
       renderItems('all');
     })
     .catch(() => {
