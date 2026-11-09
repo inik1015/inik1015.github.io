@@ -81,7 +81,7 @@
   .pillar p { font-size: 0.82rem; color: #5A7A4A; line-height: 1.5; }
 
   .news-section { background: #F2F9EE; }
-  .news-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 660px; margin: 2rem auto 0; }
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1000px; margin: 2rem auto 0; }
   .news-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid #C8DFC0; transition: transform 0.2s, box-shadow 0.2s; }
   .news-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30,92,20,0.1); }
   .news-img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
@@ -495,7 +495,7 @@
 
   Promise.all(SHEETS.map(s => fetchSheetAll(s)))
     .then(allRows => {
-      // Merge Breaking + Community, sort newest first, show the 2 latest
+      // Merge Breaking + Community, sort newest first, show the 3 latest
       const items = [];
       allRows.forEach((rows, i) => {
         rows.forEach(row => {
@@ -503,7 +503,7 @@
         });
       });
       items.sort((a, b) => b.time - a.time);
-      items.slice(0, 2).forEach(item => {
+      items.slice(0, 3).forEach(item => {
         const row = item.row;
         const sheet = item.sheet;
         const title = row.c[0]?.v || '';
