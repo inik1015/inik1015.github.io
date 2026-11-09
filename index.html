@@ -452,13 +452,32 @@
 
   function parseDate(rawDate) {
     if (!rawDate) return '';
-    if (typeof rawDate.v === 'string') return rawDate.v;
+    if (typeof rawDate.v === 'string' && rawDate.v.indexOf('Date(') === 0 && rawDate.f) return rawDate.f;
+    if (typeof rawDate.v === 'string') return rawDate.v.trim();
     if (rawDate.f) return rawDate.f;
     if (typeof rawDate.v === 'object' && rawDate.v !== null) {
       const d = new Date(rawDate.v);
       return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     }
     return '';
+  }
+
+  // Convert a sheet date cell to a sortable timestamp (newest first sorting)
+  function toTime(rawDate) {
+    if (!rawDate || rawDate.v == null) return 0;
+    const str = String(rawDate.v).replace(/\s+/g, ' ').trim();
+    const g = str.match(/^Date\((\d+),(\d+),(\d+)/);
+    if (g) return new Date(+g[1], +g[2], +g[3]).getTime();
+    const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (ymd) return new Date(+ymd[1], +ymd[2] - 1, +ymd[3]).getTime();
+    const months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+    const mdy = str.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+    if (mdy) {
+      const mi = months.indexOf(mdy[1].toLowerCase());
+      if (mi !== -1) return new Date(+mdy[3], mi, +mdy[2]).getTime();
+    }
+    const t = Date.parse(str);
+    return isNaN(t) ? 0 : t;
   }
 
   function fetchSheetAll(sheet) {
@@ -476,10 +495,17 @@
 
   Promise.all(SHEETS.map(s => fetchSheetAll(s)))
     .then(allRows => {
+      // Merge Breaking + Community, sort newest first, show the 2 latest
+      const items = [];
       allRows.forEach((rows, i) => {
-        const row = rows[0];
-        if (!row) return;
-        const sheet = SHEETS[i];
+        rows.forEach(row => {
+          if (row && row.c && row.c[0] && row.c[0].v) items.push({ row: row, sheet: SHEETS[i], time: toTime(row.c[2]) });
+        });
+      });
+      items.sort((a, b) => b.time - a.time);
+      items.slice(0, 2).forEach(item => {
+        const row = item.row;
+        const sheet = item.sheet;
         const title = row.c[0]?.v || '';
         const desc = row.c[1]?.v || '';
         const date = parseDate(row.c[2]);
